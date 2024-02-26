@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
-import "@/styles/global.css";
+import "@/assets/styles/global.css";
 import { Metadata } from "next";
+import Navbar from "@/ui/nav/Navbar";
 
 export const metadata: Metadata = {
   title: "Property Paradise | Find your dream property",
@@ -12,7 +13,12 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <header>
+          <Navbar />
+        </header>
+        <main>{children}</main>
+      </body>
     </html>
   );
 };
