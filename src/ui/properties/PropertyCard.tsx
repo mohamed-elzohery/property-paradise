@@ -8,6 +8,7 @@ import {
   FaMoneyBill,
 } from "react-icons/fa";
 import { Property, Rates } from "@/types/properties/Property";
+import Link from "next/link";
 
 interface PropertCard {
   property: Property;
@@ -91,12 +92,12 @@ const PropertyCard: React.FC<PropertCard> = ({
               {city} {state}{" "}
             </span>
           </div>
-          <a
-            href="property.html"
+          <Link
+            href={`/properties/${_id}`}
             className="h-[36px] bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-center text-sm"
           >
             Details
-          </a>
+          </Link>
         </div>
       </div>
     </div>

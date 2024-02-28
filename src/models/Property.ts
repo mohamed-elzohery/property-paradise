@@ -83,6 +83,7 @@ const PropertySchema = new Schema(
   },
   {
     timestamps: true,
+    _id: true,
   }
 );
 

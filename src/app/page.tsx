@@ -4,7 +4,6 @@ import HomeProperties from "@/ui/properties/HomeProperties";
 import React from "react";
 
 const HomePage = () => {
-  console.log(process.env.MONGODB_URI);
   return (
     <>
       <Hero />
