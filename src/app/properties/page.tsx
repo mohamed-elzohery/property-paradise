@@ -1,9 +1,10 @@
 import PropertiesList from "@/ui/properties/PropertiesList";
 import React from "react";
-import DUMMY_PROPERTIES from "@/assets/properties.json";
+import { fetchProperties } from "@/lib/data/properties";
 
-const PropertiesPage = () => {
-  const properties = DUMMY_PROPERTIES;
+const PropertiesPage = async () => {
+  const properties = await fetchProperties();
+
   return (
     <section className="px-4 py-6">
       <div className="container-xl lg:container m-auto">

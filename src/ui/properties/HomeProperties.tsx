@@ -2,11 +2,13 @@ import React from "react";
 import PropertiesList from "./PropertiesList";
 import DUMMY_PROPS from "@/assets/properties.json";
 import Link from "next/link";
+import { fetchProperties } from "@/lib/data/properties";
 
-const HomeProperties = () => {
-  const randomProperties = DUMMY_PROPS.sort(
-    () => Math.random() - Math.random()
-  ).slice(0, 3);
+const HomeProperties = async () => {
+  const properties = await fetchProperties();
+  const randomProperties = properties
+    .sort(() => Math.random() - Math.random())
+    .slice(0, 3);
 
   return (
     <>
