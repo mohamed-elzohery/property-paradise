@@ -9,7 +9,6 @@ export const GET = async (
   try {
     connectDB();
     const properties = await Property.findById(params.id);
-    console.log(properties[0]);
     return new Response(JSON.stringify(properties), { status: 200 });
   } catch (error) {
     return new Response("something went wrong", { status: 500 });

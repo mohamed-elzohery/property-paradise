@@ -3,6 +3,7 @@ import "@/assets/styles/global.css";
 import { Metadata } from "next";
 import Navbar from "@/ui/nav/Navbar";
 import Footer from "@/ui/footer/Footer";
+import AuthProvider from "@/Providers/SessionProvider";
 
 export const metadata: Metadata = {
   title: "Property Paradise | Find your dream property",
@@ -14,13 +15,15 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang="en">
-      <body>
-        <header>
-          <Navbar />
-        </header>
-        <main>{children}</main>
-        <Footer />
-      </body>
+      <AuthProvider>
+        <body>
+          <header>
+            <Navbar />
+          </header>
+          <main>{children}</main>
+          <Footer />
+        </body>
+      </AuthProvider>
     </html>
   );
 };

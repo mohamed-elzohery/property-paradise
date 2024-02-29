@@ -11,6 +11,7 @@ type NavLink = Omit<(typeof Navlinks)[0], "requiresLogin"> & {
 interface NavLinkProps {
   link: NavLink;
   className?: string;
+  onClick: () => void;
   activeClassNames?: string;
 }
 
@@ -18,6 +19,7 @@ const NavLink: React.FC<NavLinkProps> = ({
   link: { isVisible, name, path },
   activeClassNames,
   className,
+  onClick,
 }) => {
   const currentPathname = usePathname();
   const linkPath = path;
@@ -27,6 +29,7 @@ const NavLink: React.FC<NavLinkProps> = ({
 
   return (
     <Link
+      onClick={onClick}
       href={linkPath}
       className={`${isActive ? activeClassNames : ""} ${className}`}
     >

@@ -8,11 +8,18 @@ import Link from "next/link";
 import { FaGoogle } from "react-icons/fa";
 import NavLink from "./NavLink";
 import { Navlinks } from "./Navlinks";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setisMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const { status, data } = useSession();
+  const isLoggedIn = status === "authenticated";
+
+  const resetUI = () => {
+    setIsDropdownOpen(false);
+    setisMobileMenuOpen(false);
+  };
   return (
     <nav className="bg-blue-700 border-b border-blue-500">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -47,7 +54,11 @@ const Navbar = () => {
           </div>
           <div className="flex flex-1 items-center justify-center md:items-stretch md:justify-start">
             {/* Logo */}
-            <Link className="flex flex-shrink-0 items-center" href="/">
+            <Link
+              className="flex flex-shrink-0 items-center"
+              href="/"
+              onClick={() => resetUI()}
+            >
               <Image
                 className="h-10 w-auto"
                 src={LogoImage}
@@ -73,6 +84,7 @@ const Navbar = () => {
                       "text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2"
                     }
                     key={link.name}
+                    onClick={() => resetUI()}
                   />
                 ))}
               </div>
@@ -82,7 +94,10 @@ const Navbar = () => {
           {!isLoggedIn && (
             <div className="hidden md:block md:ml-6">
               <div className="flex items-center">
-                <button className="flex items-center text-white bg-gray-700 hover:bg-gray-900 hover:text-white rounded-md px-3 py-2">
+                <button
+                  onClick={() => signIn("google")}
+                  className="flex items-center text-white bg-gray-700 hover:bg-gray-900 hover:text-white rounded-md px-3 py-2"
+                >
                   <FaGoogle className=" text-white mr-2" />
                   <span>Login or Register</span>
                 </button>
@@ -123,7 +138,7 @@ const Navbar = () => {
                 <div>
                   <button
                     type="button"
-                    className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                    className="relative h-8 w-8  flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                     id="user-menu-button"
                     aria-expanded="false"
                     aria-haspopup="true"
@@ -132,8 +147,9 @@ const Navbar = () => {
                     <span className="absolute -inset-1.5" />
                     <span className="sr-only">Open user menu</span>
                     <Image
-                      className="h-8 w-8 rounded-full"
-                      src={DefaultProfile}
+                      fill
+                      className="rounded-full"
+                      src={data?.user?.image || DefaultProfile}
                       alt="profile"
                     />
                   </button>
@@ -154,6 +170,7 @@ const Navbar = () => {
                       role="menuitem"
                       tabIndex={-1}
                       id="user-menu-item-0"
+                      onClick={() => resetUI()}
                     >
                       Your Profile
                     </Link>
@@ -163,18 +180,22 @@ const Navbar = () => {
                       role="menuitem"
                       tabIndex={-1}
                       id="user-menu-item-2"
+                      onClick={() => resetUI()}
                     >
                       Saved Properties
                     </Link>
-                    <Link
-                      href="#"
+                    <button
+                      onClick={() => {
+                        signOut();
+                        resetUI();
+                      }}
                       className="block px-4 py-2 text-sm text-gray-700"
                       role="menuitem"
                       tabIndex={-1}
                       id="user-menu-item-2"
                     >
                       Sign Out
-                    </Link>
+                    </button>
                   </div>
                 )}
               </div>
@@ -198,10 +219,14 @@ const Navbar = () => {
                   " text-white block rounded-md px-3 py-2 text-base font-medium hover:bg-gray-700"
                 }
                 key={link.name}
+                onClick={() => resetUI()}
               />
             ))}
             {!isLoggedIn && (
-              <button className="flex items-center text-white bg-gray-700 hover:bg-gray-900 hover:text-white rounded-md px-3 py-2 my-4">
+              <button
+                onClick={() => signIn("google")}
+                className="flex items-center text-white bg-gray-700 hover:bg-gray-900 hover:text-white rounded-md px-3 py-2 my-4"
+              >
                 <FaGoogle className="mr-2" />
                 <span>Login or Register</span>
               </button>
