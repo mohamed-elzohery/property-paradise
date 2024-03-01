@@ -1,5 +1,9 @@
 "use server";
 
+import cloudinary from "@/config/cloudinary";
+import connectDB from "@/config/database";
+import { auth } from "@/lib/utils/auth";
+import Property from "@/models/Property";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { ZodIssue, z } from "zod";
@@ -10,6 +14,36 @@ interface CreateSchemaFormState {
     _form?: string[];
   };
 }
+
+const getImageBase64 = async (image: File) => {
+  const imageBuffer = await image.arrayBuffer();
+  const imageArray = Array.from(new Uint8Array(imageBuffer));
+  const imageData = Buffer.from(imageArray);
+
+  const imageBase = imageData.toString("base64");
+  return imageBase;
+};
+
+const uploadImageToCloudinary = async (base64: string) => {
+  const imageUpload = cloudinary.uploader.upload(
+    `data:image/png;base64,${base64}`,
+    {
+      folder: process.env.CLOUDINARY__FOLDER_NAME,
+    }
+  );
+  return imageUpload;
+};
+
+const savePropertyImagesToCloudinary = async (images: File[]) => {
+  const imageUploadArray = await Promise.all<string>(
+    images.map(async (image: File) => {
+      const base64 = await getImageBase64(image);
+      const result = await uploadImageToCloudinary(base64);
+      return result.secure_url;
+    })
+  );
+  return imageUploadArray;
+};
 
 const createPropertySchema = z.object({
   name: z.string().min(3, "name must be 3 chars at least"),
@@ -23,10 +57,12 @@ const createPropertySchema = z.object({
     "Studio",
     "Other",
   ]),
-  street: z.string().min(1, "street is required"),
-  city: z.string().min(1, "city is required"),
-  state: z.string().min(1, "state is required"),
-  zipcode: z.string().min(1, "zipcode is required"),
+  location: z.object({
+    street: z.string().min(1, "street is required"),
+    city: z.string().min(1, "city is required"),
+    state: z.string().min(1, "state is required"),
+    zipcode: z.string().min(1, "zipcode is required"),
+  }),
   beds: z.string().min(1, "beds number is required"),
   baths: z.string().min(1, "baths number is required"),
   square_feet: z.string().min(1, "square feet is required"),
@@ -42,10 +78,7 @@ const createPropertySchema = z.object({
       .min(1, "seller email is required")
       .email("invalid seller email address"),
     name: z.string().min(1, "seller name is required"),
-    phone: z
-      .string()
-      .regex(/^\+(?:[0-9]●?){6,14}[0-9]$/, "seller phone number is invalid")
-      .min(1, "seller phone is required"),
+    phone: z.string().min(1, "seller phone is required"),
   }),
   images: z.array(z.any()),
 });
@@ -58,10 +91,12 @@ export const createProperty = async (
     name: formData.get("name"),
     description: formData.get("description"),
     type: formData.get("type"),
-    street: formData.get("street") || "",
-    city: formData.get("city") || "",
-    state: formData.get("state") || "",
-    zipcode: formData.get("zipcode") || "",
+    location: {
+      street: formData.get("location.street") || "",
+      city: formData.get("location.city") || "",
+      state: formData.get("location.state") || "",
+      zipcode: formData.get("location.zipcode") || "",
+    },
     beds: formData.get("beds") || "",
     baths: formData.get("baths") || "",
     square_feet: formData.get("square_feet") || "",
@@ -73,8 +108,8 @@ export const createProperty = async (
     },
 
     seller_info: {
-      email: formData.get("seller_info.email"),
-      name: formData.get("seller_info.name"),
+      email: formData.get("seller_info.email") || "",
+      name: formData.get("seller_info.name") || "",
       phone: formData.get("seller_info.phone"),
     },
     images: (formData.getAll("images") as File[]).filter(
@@ -90,6 +125,18 @@ export const createProperty = async (
   }
 
   try {
+    await connectDB();
+    const session = await auth();
+    if (!session === null) throw new Error("user is not logged in");
+    let imagesURLs;
+    if (data.images.length !== 0)
+      imagesURLs = await savePropertyImagesToCloudinary(data.images);
+    const propertyInstance = new Property({
+      ...data,
+      images: imagesURLs,
+      owner: session?.user?.id,
+    });
+    await propertyInstance.save();
   } catch (error: unknown) {
     if (error instanceof Error) return { errors: { _form: [error.message] } };
     else return { errors: { _form: ["Something went wrong"] } };

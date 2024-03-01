@@ -38,7 +38,7 @@ const PropertyCard: React.FC<PropertCard> = ({
     <div className="bg-white rounded-xl shadow-md relative">
       <div className="h-60">
         <Image
-          src={`/images/properties/${images[0]}` || PropertyDefaultImage}
+          src={images[0] || PropertyDefaultImage}
           alt={`${name}: ${description}`}
           className="object-cover rounded-t-xl !static"
           fill

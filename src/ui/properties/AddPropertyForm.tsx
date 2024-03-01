@@ -127,8 +127,9 @@ const AddPropertyForm = () => {
           </label>
           <input
             type="number"
-            defaultValue={""}
+            defaultValue={1}
             id="square_feet"
+            min={1}
             name="square_feet"
             className="border rounded w-full py-2 px-3"
           />
@@ -346,7 +347,7 @@ const AddPropertyForm = () => {
         <input
           type="text"
           id="seller_name"
-          name="seller_info.name."
+          name="seller_info.name"
           defaultValue={""}
           className="border rounded w-full py-2 px-3"
           placeholder="Name"
@@ -360,7 +361,7 @@ const AddPropertyForm = () => {
           Seller Email
         </label>
         <input
-          type="email"
+          type="text"
           defaultValue={""}
           id="seller_email"
           name="seller_info.email"
