@@ -15,15 +15,15 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang="en">
-      <AuthProvider>
-        <body>
+      <body>
+        <AuthProvider>
           <header>
             <Navbar />
           </header>
           <main>{children}</main>
           <Footer />
-        </body>
-      </AuthProvider>
+        </AuthProvider>
+      </body>
     </html>
   );
 };

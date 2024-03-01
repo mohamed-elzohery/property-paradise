@@ -1,8 +1,8 @@
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import React from "react";
 
 export interface PropertyHeaderImageProps {
-  imageSrc: string;
+  imageSrc: string | StaticImageData;
   description?: string;
 }
 

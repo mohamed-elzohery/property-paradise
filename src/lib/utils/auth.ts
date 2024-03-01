@@ -1,22 +1,22 @@
 import connectDB from "@/config/database";
 import User from "@/models/User";
-import { AuthOptions, Profile, Session } from "next-auth";
+import NextAuth, { NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
-export const authOptions: AuthOptions = {
+if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET)
+  throw new Error("missing Google credentials");
+
+const authOptions: NextAuthConfig = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code",
-        },
-      },
     }),
   ],
+  pages: {
+    signIn: "/",
+    signOut: "/",
+  },
   callbacks: {
     // Invoked on successful signin
     async signIn({ user }) {
@@ -39,12 +39,28 @@ export const authOptions: AuthOptions = {
       return true;
     },
     // Modifies the session object
-    async session({ session, token }) {
-      // 1. Get user from database
-
-      // 2. Assign the user id to the session
-      // 3. return session
-      return session;
+    async session({ session }) {
+      try {
+        console.log("session is", session);
+        await connectDB();
+        // 1. Get user from database
+        const user = await User.findOne({ email: session.user?.email });
+        if (!user) return session;
+        // 2. Assign the user id to the session
+        session.user.id = user.id.toString();
+        // 3. return session
+        return session;
+      } catch (error) {
+        console.log("error occured", (error as any).message);
+        return session;
+      }
     },
   },
 };
+
+export const {
+  auth,
+  handlers: { GET, POST },
+  signIn,
+  signOut,
+} = NextAuth(authOptions);

@@ -8,6 +8,7 @@ import {
   FaMoneyBill,
 } from "react-icons/fa";
 import { Property, Rates } from "@/types/properties/Property";
+import PropertyDefaultImage from "@/assets/images/logo.png";
 import Link from "next/link";
 
 interface PropertCard {
@@ -37,7 +38,7 @@ const PropertyCard: React.FC<PropertCard> = ({
     <div className="bg-white rounded-xl shadow-md relative">
       <div className="h-60">
         <Image
-          src={`/images/properties/${images[0]}`}
+          src={`/images/properties/${images[0]}` || PropertyDefaultImage}
           alt={`${name}: ${description}`}
           className="object-cover rounded-t-xl !static"
           fill
