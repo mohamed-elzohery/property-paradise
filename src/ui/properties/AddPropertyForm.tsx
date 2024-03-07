@@ -1,12 +1,22 @@
 "use client";
 import { createProperty } from "@/actions";
-import React from "react";
+import Image from "next/image";
+import React, { useState } from "react";
 import { useFormState } from "react-dom";
+import { FaTrash } from "react-icons/fa";
+
+interface ImagePreview {
+  src: string;
+  isSaved: boolean;
+  name: string;
+}
 
 const AddPropertyForm = () => {
   const [state, action] = useFormState(createProperty, {
     errors: {},
   });
+  const [imagesPreviewed, setImagesPreviewed] = useState<ImagePreview[]>([]);
+  console.log(imagesPreviewed);
   return (
     <form action={action}>
       <h2 className="text-3xl text-center font-semibold mb-6">Add Property</h2>
@@ -385,17 +395,74 @@ const AddPropertyForm = () => {
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="images" className="block text-gray-700 font-bold mb-2">
-          Images (Select up to 4 images)
+        <label htmlFor="images" className="text-gray-700 font-bold mb-2">
+          <div className="h-[200px] my-6 cursor-pointer w-100  outline-dashed outline-gray-200 rounded-lg flex space-y-4 justify-center items-center">
+            <div className="flex flex-col space-y-4 justify-center items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                width={100}
+                fill="#DDD"
+              >
+                <path d="M0 96C0 60.7 28.7 32 64 32H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zM323.8 202.5c-4.5-6.6-11.9-10.5-19.8-10.5s-15.4 3.9-19.8 10.5l-87 127.6L170.7 297c-4.6-5.7-11.5-9-18.7-9s-14.2 3.3-18.7 9l-64 80c-5.8 7.2-6.9 17.1-2.9 25.4s12.4 13.6 21.6 13.6h96 32H424c8.9 0 17.1-4.9 21.2-12.8s3.6-17.4-1.4-24.7l-120-176zM112 192a48 48 0 1 0 0-96 48 48 0 1 0 0 96z" />
+              </svg>
+              <span className="">Add Images (Select up to 4 images)</span>
+            </div>
+          </div>
         </label>
         <input
           type="file"
           id="images"
           name="images"
-          className="border rounded w-full py-2 px-3"
+          className="border rounded w-full py-2 px-3 hidden"
           accept="image/*"
           multiple={true}
+          maxLength={4}
+          onChange={(e) => {
+            console.log("e.target.files");
+            const files = e.target.files;
+            if (!files || files.length === 0) return;
+            Array.from(files).forEach((file) => {
+              setImagesPreviewed((prev) => [
+                ...prev,
+                {
+                  isSaved: false,
+                  name: file.name,
+                  src: URL.createObjectURL(file),
+                },
+              ]);
+            });
+          }}
         />
+      </div>
+      <div className="fluid-grid gap-6 mt-6 ">
+        {imagesPreviewed.map(({ src, name }) => (
+          <div
+            className="group rounded-lg shadow-md overflow-hidden border border-gray-200 relative h-[300px]"
+            key={name}
+          >
+            <Image
+              alt={"none"}
+              src={src}
+              fill
+              className="transition-all duration-300 md:group-hover:brightness-75	"
+            />
+            <button
+              onClick={() => {
+                setImagesPreviewed((prev) =>
+                  prev.filter(({ name: n }) => n !== name)
+                );
+              }}
+              className="flex space-x-3 justify-center items-center absolute 
+              top-5 right-5  cursor-pointer p-4 md:max-w-40  bg-red-500 rounded-md 
+               md:group-hover:flex md:top-[50%] md:left-[50%] md:-translate-x-[50%]  
+              md:translate-y-[150%] md:opacity-0 md:group-hover:opacity-100 md:group-hover:-translate-y-[50%]  duration-300 transition-all"
+            >
+              <FaTrash className="fill-white" />
+              <p className="text-white hidden md:block">Delete</p>
+            </button>
+          </div>
+        ))}
       </div>
       <div>
         {state.errors.fieldsErrors !== undefined && (
@@ -408,7 +475,7 @@ const AddPropertyForm = () => {
         )}
 
         <button
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
+          className="my-6 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
           type="submit"
         >
           Add Property

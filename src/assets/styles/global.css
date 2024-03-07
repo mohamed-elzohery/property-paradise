@@ -4,9 +4,10 @@
 
 @layer utilities {
   .fluid-grid {
+    display: grid;
     grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   }
   .fluid-grid > *:last-child:nth-child(odd) {
-    grid-column: span 2;
+    grid-column: 1 / -1;
   }
 }

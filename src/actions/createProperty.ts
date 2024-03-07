@@ -2,8 +2,9 @@
 
 import cloudinary from "@/config/cloudinary";
 import connectDB from "@/config/database";
-import { auth } from "@/lib/utils/auth";
+import { authOptions } from "@/lib/utils/auth";
 import Property from "@/models/Property";
+import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { ZodIssue, z } from "zod";
@@ -80,7 +81,7 @@ const createPropertySchema = z.object({
     name: z.string().min(1, "seller name is required"),
     phone: z.string().min(1, "seller phone is required"),
   }),
-  images: z.array(z.any()),
+  images: z.array(z.any()).length(4, "cannot upload more than 4 images"),
 });
 
 export const createProperty = async (
@@ -124,7 +125,7 @@ export const createProperty = async (
   }
 
   try {
-    const session = await auth();
+    const session = await getServerSession(authOptions);
     if (!session === null) throw new Error("user is not logged in");
     let imagesURLs;
     if (data.images.length !== 0)

@@ -7,7 +7,7 @@ interface PropertyGalleryProps {
 
 const PropertyGallery: React.FC<PropertyGalleryProps> = ({ images }) => {
   return (
-    <section className="w-100 mb-6 mx-auto grid fluid-grid bg-blue-50 gap-6 p-6 ]">
+    <section className="w-100 mb-6 mx-auto  fluid-grid bg-blue-50 gap-6 p-6 ]">
       {images.map((imageSrc, index) => (
         <div className="relative rounded-lg h-[400px]" key={imageSrc}>
           <Image

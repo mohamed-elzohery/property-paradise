@@ -26,7 +26,7 @@ export async function deleteListing(
     const property = await Property.findById(propertyID);
     if (property.owner.toString() !== session.user.id)
       return { message: "unauthorized user", success: false, callNumber };
-    // await property.deleteOne();
+    await property.deleteOne();
     revalidatePath("/profile");
     return {
       message: "property deleted successfully",
