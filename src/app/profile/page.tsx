@@ -1,4 +1,3 @@
-import { auth } from "@/lib/utils/auth";
 import Image from "next/image";
 import React from "react";
 import Link from "next/link";
@@ -6,9 +5,12 @@ import { fetchPropertiesByUserID } from "@/lib/data/properties";
 import { notFound } from "next/navigation";
 import ProfileCard from "@/ui/profile/ProfileCard";
 import LisitngCard from "@/ui/properties/PropertyListings/LisitngCard";
+import { authHandler, authOptions } from "@/lib/utils/auth";
+import { getServerSession } from "next-auth";
 
 const ProfilePage = async () => {
-  const session = await auth();
+  const session = await getServerSession(authOptions);
+  console.log("user session", session);
   if (!session) return notFound();
   const userLisitings = await fetchPropertiesByUserID(
     session?.user?.id as string

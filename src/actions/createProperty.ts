@@ -117,7 +117,6 @@ export const createProperty = async (
     ),
   };
   const result = createPropertySchema.safeParse(data);
-  console.log(data);
   if (!result.success) {
     return {
       errors: { fieldsErrors: result.error.errors },
@@ -125,7 +124,6 @@ export const createProperty = async (
   }
 
   try {
-    await connectDB();
     const session = await auth();
     if (!session === null) throw new Error("user is not logged in");
     let imagesURLs;

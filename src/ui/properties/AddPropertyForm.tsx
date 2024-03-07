@@ -7,7 +7,6 @@ const AddPropertyForm = () => {
   const [state, action] = useFormState(createProperty, {
     errors: {},
   });
-  console.log(state, "state");
   return (
     <form action={action}>
       <h2 className="text-3xl text-center font-semibold mb-6">Add Property</h2>

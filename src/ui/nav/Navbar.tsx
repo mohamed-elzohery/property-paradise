@@ -8,8 +8,7 @@ import Link from "next/link";
 import { FaGoogle } from "react-icons/fa";
 import NavLink from "./NavLink";
 import { Navlinks } from "./Navlinks";
-import { useSession } from "next-auth/react";
-import { signin, signout } from "@/actions";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setisMobileMenuOpen] = useState(false);
@@ -95,15 +94,13 @@ const Navbar = () => {
           {!isLoggedIn && (
             <div className="hidden md:block md:ml-6">
               <div className="flex items-center">
-                <form action={signin}>
-                  <button
-                    type="submit"
-                    className="flex items-center text-white bg-gray-700 hover:bg-gray-900 hover:text-white rounded-md px-3 py-2"
-                  >
-                    <FaGoogle className=" text-white mr-2" />
-                    <span>Login or Register</span>
-                  </button>
-                </form>
+                <button
+                  onClick={() => signIn("google")}
+                  className="flex items-center text-white bg-gray-700 hover:bg-gray-900 hover:text-white rounded-md px-3 py-2"
+                >
+                  <FaGoogle className=" text-white mr-2" />
+                  <span>Login or Register</span>
+                </button>
               </div>
             </div>
           )}
@@ -188,17 +185,15 @@ const Navbar = () => {
                     >
                       Saved Properties
                     </Link>
-                    <form action={signout}>
-                      <button
-                        type="submit"
-                        className="block px-4 py-2 text-sm text-gray-700"
-                        role="menuitem"
-                        tabIndex={-1}
-                        id="user-menu-item-2"
-                      >
-                        Sign Out
-                      </button>
-                    </form>
+                    <button
+                      onClick={() => signOut()}
+                      className="block px-4 py-2 text-sm text-gray-700"
+                      role="menuitem"
+                      tabIndex={-1}
+                      id="user-menu-item-2"
+                    >
+                      Sign Out
+                    </button>
                   </div>
                 )}
               </div>
@@ -226,15 +221,13 @@ const Navbar = () => {
               />
             ))}
             {!isLoggedIn && (
-              <form action={signin}>
-                <button
-                  type="submit"
-                  className="flex items-center text-white bg-gray-700 hover:bg-gray-900 hover:text-white rounded-md px-3 py-2 my-4"
-                >
-                  <FaGoogle className="mr-2" />
-                  <span>Login or Register</span>
-                </button>
-              </form>
+              <button
+                onClick={() => signIn("google")}
+                className="flex items-center text-white bg-gray-700 hover:bg-gray-900 hover:text-white rounded-md px-3 py-2 my-4"
+              >
+                <FaGoogle className="mr-2" />
+                <span>Login or Register</span>
+              </button>
             )}
           </div>
         </div>

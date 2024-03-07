@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import Navbar from "@/ui/nav/Navbar";
 import Footer from "@/ui/footer/Footer";
 import AuthProvider from "@/Providers/SessionProvider";
+import ToastContainer from "@/Providers/ToastContainer";
 
 export const metadata: Metadata = {
   title: "Property Paradise | Find your dream property",
@@ -22,6 +23,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
           </header>
           <main>{children}</main>
           <Footer />
+          <ToastContainer />
         </AuthProvider>
       </body>
     </html>

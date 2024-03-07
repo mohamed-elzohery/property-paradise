@@ -1,18 +1,17 @@
 import mongoose from "mongoose";
 
-let connected = false;
+if (!process.env.MONGODB_URI) throw new Error("no mongodb uri provided");
 
 const connectDB = async () => {
-  // mongoose.set("strictQuery", true);
-
-  if (connected) return console.log("Already connected to database.");
+  if (mongoose.connections[0].readyState)
+    return console.log("Already connected to database.");
 
   try {
+    mongoose.set("strictQuery", true);
     await mongoose.connect(process.env.MONGODB_URI);
-    connected = false;
     console.log("connnected to database successfully");
   } catch (error) {
-    console.log("Failed to connect to database.");
+    console.log("Failed to connect to database.", error);
   }
 };
 

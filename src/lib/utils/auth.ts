@@ -1,12 +1,12 @@
+import NextAuth, { AuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
 import connectDB from "@/config/database";
 import User from "@/models/User";
-import NextAuth, { NextAuthConfig } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
 
 if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET)
   throw new Error("missing Google credentials");
 
-const authOptions: NextAuthConfig = {
+export const authOptions: AuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -17,9 +17,10 @@ const authOptions: NextAuthConfig = {
     signIn: "/",
     signOut: "/",
   },
+
   callbacks: {
     // Invoked on successful signin
-    async signIn({ user }) {
+    async signIn({ user, account }) {
       // 1. Connect to database
       await connectDB();
       // 2. Check if user exists
@@ -29,7 +30,7 @@ const authOptions: NextAuthConfig = {
         // Truncate user name if too long
         const username = user.name?.slice(0, 20);
 
-        await User.create({
+        const createdUser = await User.create({
           email: user.email,
           username,
           image: user.image,
@@ -39,28 +40,30 @@ const authOptions: NextAuthConfig = {
       return true;
     },
     // Modifies the session object
-    async session({ session }) {
+    async session({ session, token }) {
       try {
-        console.log("session is", session);
-        await connectDB();
-        // 1. Get user from database
-        const user = await User.findOne({ email: session.user?.email });
-        if (!user) return session;
-        // 2. Assign the user id to the session
-        session.user.id = user.id.toString();
-        // 3. return session
+        if (session && token) {
+          session.user!.id! = token.userId as string;
+        }
         return session;
       } catch (error) {
         console.log("error occured", (error as any).message);
         return session;
       }
     },
+    async jwt({ token }) {
+      try {
+        await connectDB();
+        const user = await User.findOne({ email: token.email });
+        if (!user) return token;
+        token.userId = user.id.toString();
+        return token;
+      } catch (error) {
+        console.log("error while creating token", error);
+      }
+      return token;
+    },
   },
 };
 
-export const {
-  auth,
-  handlers: { GET, POST },
-  signIn,
-  signOut,
-} = NextAuth(authOptions);
+export const authHandler = NextAuth(authOptions);

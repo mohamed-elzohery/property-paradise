@@ -7,9 +7,10 @@ export const GET = async (
   { params }: { params: { userId: string } }
 ) => {
   try {
-    connectDB();
     const userId = params.userId;
     if (!userId) return new Response("user id is required", { status: 400 });
+    await connectDB();
+
     const properties = await Property.find({ owner: userId });
     return new Response(JSON.stringify(properties), { status: 200 });
   } catch (error) {

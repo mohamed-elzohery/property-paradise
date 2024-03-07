@@ -7,7 +7,7 @@ export const GET = async (
   { params }: { params: { id: string } }
 ) => {
   try {
-    connectDB();
+    await connectDB();
     const properties = await Property.findById(params.id);
     return new Response(JSON.stringify(properties), { status: 200 });
   } catch (error) {

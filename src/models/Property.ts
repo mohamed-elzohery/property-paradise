@@ -86,7 +86,6 @@ const PropertySchema = new Schema(
     _id: true,
   }
 );
-console.log(models);
 const Property = models["Property"] || model("Property", PropertySchema);
 
 export default Property;
