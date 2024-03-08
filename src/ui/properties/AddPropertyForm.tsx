@@ -11,11 +11,22 @@ interface ImagePreview {
   name: string;
 }
 
-const AddPropertyForm = () => {
-  const [state, action] = useFormState(createProperty, {
-    errors: {},
+const createFormDataFromArray = (images: File[]) => {
+  const formData = new FormData();
+  images.forEach((imageFile) => {
+    formData.append("images", imageFile);
   });
-  const [imagesPreviewed, setImagesPreviewed] = useState<ImagePreview[]>([]);
+  return formData;
+};
+
+const AddPropertyForm = () => {
+  const [imagesPreviewed, setImagesPreviewed] = useState<File[]>([]);
+  const [state, action] = useFormState(
+    createProperty.bind(null, createFormDataFromArray(imagesPreviewed)),
+    {
+      errors: {},
+    }
+  );
   console.log(imagesPreviewed);
   return (
     <form action={action}>
@@ -413,50 +424,38 @@ const AddPropertyForm = () => {
         <input
           type="file"
           id="images"
-          name="images"
           className="border rounded w-full py-2 px-3 hidden"
           accept="image/*"
           multiple={true}
           maxLength={4}
           onChange={(e) => {
-            console.log("e.target.files");
             const files = e.target.files;
             if (!files || files.length === 0) return;
             Array.from(files).forEach((file) => {
-              setImagesPreviewed((prev) => [
-                ...prev,
-                {
-                  isSaved: false,
-                  name: file.name,
-                  src: URL.createObjectURL(file),
-                },
-              ]);
+              setImagesPreviewed((prev) => [...prev, file]);
             });
           }}
         />
       </div>
       <div className="fluid-grid gap-6 mt-6 ">
-        {imagesPreviewed.map(({ src, name }) => (
+        {imagesPreviewed.map((file) => (
           <div
             className="group rounded-lg shadow-md overflow-hidden border border-gray-200 relative h-[300px]"
-            key={name}
+            key={file.name}
           >
             <Image
               alt={"none"}
-              src={src}
+              src={URL.createObjectURL(file)}
               fill
               className="transition-all duration-300 md:group-hover:brightness-75	"
             />
             <button
               onClick={() => {
                 setImagesPreviewed((prev) =>
-                  prev.filter(({ name: n }) => n !== name)
+                  prev.filter(({ name: n }) => n !== file.name)
                 );
               }}
-              className="flex space-x-3 justify-center items-center absolute 
-              top-5 right-5  cursor-pointer p-4 md:max-w-40  bg-red-500 rounded-md 
-               md:group-hover:flex md:top-[50%] md:left-[50%] md:-translate-x-[50%]  
-              md:translate-y-[150%] md:opacity-0 md:group-hover:opacity-100 md:group-hover:-translate-y-[50%]  duration-300 transition-all"
+              className="flex space-x-3 justify-center items-center absolute top-5 right-5 cursor-pointer p-4 md:max-w-40 bg-red-500 rounded-md md:group-hover:flex md:top-[50%] md:left-[50%] md:-translate-x-[50%] md:translate-y-[150%] md:opacity-0 md:group-hover:opacity-100 md:group-hover:-translate-y-[50%] duration-300 transition-all"
             >
               <FaTrash className="fill-white" />
               <p className="text-white hidden md:block">Delete</p>

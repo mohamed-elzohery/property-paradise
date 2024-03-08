@@ -7,6 +7,7 @@ import Property from "@/models/Property";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { json } from "stream/consumers";
 import { ZodIssue, z } from "zod";
 
 interface CreateSchemaFormState {
@@ -81,10 +82,11 @@ const createPropertySchema = z.object({
     name: z.string().min(1, "seller name is required"),
     phone: z.string().min(1, "seller phone is required"),
   }),
-  images: z.array(z.any()).length(4, "cannot upload more than 4 images"),
+  images: z.array(z.any()).max(4, "cannot upload more than 4 images"),
 });
 
 export const createProperty = async (
+  imagesUploaded: FormData,
   formState: CreateSchemaFormState,
   formData: FormData
 ): Promise<CreateSchemaFormState> => {
@@ -113,10 +115,11 @@ export const createProperty = async (
       name: formData.get("seller_info.name") || "",
       phone: formData.get("seller_info.phone"),
     },
-    images: (formData.getAll("images") as File[]).filter(
+    images: (imagesUploaded.getAll("images") as File[]).filter(
       ({ size }) => size !== 0
     ),
   };
+  console.log(data.images);
   const result = createPropertySchema.safeParse(data);
   if (!result.success) {
     return {
