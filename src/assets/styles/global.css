@@ -5,12 +5,9 @@
 @layer utilities {
   .fluid-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(40vw, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   }
   .fluid-grid > *:last-child:nth-child(odd) {
     grid-column: 1 / -1;
-  }
-  .fluid-grid > * {
-    height: 32vw;
   }
 }
