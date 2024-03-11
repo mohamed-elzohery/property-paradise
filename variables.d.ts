@@ -3,6 +3,7 @@ namespace NodeJS {
     GOOGLE_CLIENT_ID: string;
     GOOGLE_CLIENT_SECRET: string;
     NEXT_PUBLIC_API_DOMAIN: string;
+    NEXT_PUBLIC_DOMAIN: string;
     CLOUDINARY_KEY: string;
     CLOUDINARY_NAME: string;
     CLOUDINARY_SECRET: string;
