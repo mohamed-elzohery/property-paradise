@@ -1,24 +1,39 @@
+"use server";
 import connectDB from "@/config/database";
 import { authOptions } from "@/lib/utils/auth";
 import User from "@/models/User";
 import { getServerSession } from "next-auth";
 
-export const dynamic = "force-dynamic";
+interface FormState {
+  message: string;
+  isBookmarked: boolean;
+  success: boolean;
+  callNumber: number;
+}
 
-export const POST = async (request: Request) => {
+export async function bookmarkProperty(
+  propertyID: string,
+  formState: FormState
+): Promise<FormState> {
+  const callNumber = formState.callNumber + 1;
   try {
     await connectDB();
     const session = await getServerSession(authOptions);
     if (!session || !session.user)
-      return new Response("user is not authorized", { status: 401 });
-    const { propertyID } = await request.json();
-    if (!propertyID)
-      return new Response("property id is required", { status: 400 });
+      return {
+        callNumber,
+        isBookmarked: false,
+        message: "user is not authorized",
+        success: false,
+      };
+
     const user = await User.findById(session.user.id);
     let message = "";
     let isBookmarked = user.bookmarks.includes(propertyID);
     if (isBookmarked) {
-      user.bookmarks = user.bookmarks.filter((id: string) => id !== propertyID);
+      user.bookmarks = user.bookmarks.filter(
+        (id: string) => id.toString() !== propertyID
+      );
       isBookmarked = false;
       message = "property is removed from bookmarks";
     } else {
@@ -27,11 +42,14 @@ export const POST = async (request: Request) => {
       message = "property is added to bookmarks";
     }
     await user.save();
-    return new Response(JSON.stringify({ message, isBookmarked }), {
-      status: 200,
-    });
+    return { callNumber, isBookmarked, message, success: true };
   } catch (error) {
     console.log(error);
-    return new Response("server error", { status: 500 });
+    return {
+      callNumber,
+      isBookmarked: false,
+      message: "something went wrong",
+      success: false,
+    };
   }
-};
+}

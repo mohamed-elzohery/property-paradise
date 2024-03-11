@@ -15,6 +15,7 @@ const config: Config = {
       },
     },
   },
+  safelist: ["bg-blue-600"],
   plugins: [],
 };
 export default config;
