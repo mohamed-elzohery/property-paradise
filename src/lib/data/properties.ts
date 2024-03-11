@@ -1,4 +1,5 @@
 import { Property } from "@/types/properties/Property";
+import { headers } from "next/headers";
 
 export const fetchProperties = async () => {
   try {
@@ -8,6 +9,20 @@ export const fetchProperties = async () => {
     if (!response.ok) throw new Error("failed to fetch props");
 
     return response.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const fetchSavedProperties = async () => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_DOMAIN}/properties/user/saved`,
+      { headers: headers() }
+    );
+    if (!response.ok) throw new Error("failed to fetch user saved properties");
+
+    return (await response.json()) as Property[];
   } catch (error) {
     console.log(error);
   }

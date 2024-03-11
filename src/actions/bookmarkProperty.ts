@@ -3,6 +3,7 @@ import connectDB from "@/config/database";
 import { authOptions } from "@/lib/utils/auth";
 import User from "@/models/User";
 import { getServerSession } from "next-auth";
+import { revalidatePath } from "next/cache";
 
 interface FormState {
   message: string;
@@ -42,6 +43,7 @@ export async function bookmarkProperty(
       message = "property is added to bookmarks";
     }
     await user.save();
+    revalidatePath("/properties/saved");
     return { callNumber, isBookmarked, message, success: true };
   } catch (error) {
     console.log(error);

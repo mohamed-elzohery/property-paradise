@@ -16,12 +16,12 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang="en">
-      <body>
+      <body className="min-h-screen flex flex-col">
         <AuthProvider>
           <header>
             <Navbar />
           </header>
-          <main>{children}</main>
+          <main className="flex-1">{children}</main>
           <Footer />
           <ToastContainer />
         </AuthProvider>

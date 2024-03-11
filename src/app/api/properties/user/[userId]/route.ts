@@ -1,5 +1,4 @@
 import connectDB from "@/config/database";
-import { fetchProperties } from "@/lib/data/properties";
 import Property from "@/models/Property";
 
 export const GET = async (

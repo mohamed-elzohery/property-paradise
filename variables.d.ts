@@ -9,5 +9,6 @@ namespace NodeJS {
     NEXTAUTH_SECRET: string;
     CLOUDINARY__FOLDER_NAME: string;
     MONGODB_URI: string;
+    NEXTAUTH_URL: string;
   }
 }
