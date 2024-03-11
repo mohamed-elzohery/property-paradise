@@ -10,14 +10,14 @@ import { redirect } from "next/navigation";
 import { json } from "stream/consumers";
 import { ZodIssue, z } from "zod";
 
-interface CreateSchemaFormState {
+export interface CreateSchemaFormState {
   errors: {
     fieldsErrors?: ZodIssue[];
     _form?: string[];
   };
 }
 
-const getImageBase64 = async (image: File) => {
+export const getImageBase64 = async (image: File) => {
   const imageBuffer = await image.arrayBuffer();
   const imageArray = Array.from(new Uint8Array(imageBuffer));
   const imageData = Buffer.from(imageArray);
@@ -26,7 +26,7 @@ const getImageBase64 = async (image: File) => {
   return imageBase;
 };
 
-const uploadImageToCloudinary = async (base64: string) => {
+export const uploadImageToCloudinary = async (base64: string) => {
   const imageUpload = cloudinary.uploader.upload(
     `data:image/png;base64,${base64}`,
     {
@@ -36,7 +36,7 @@ const uploadImageToCloudinary = async (base64: string) => {
   return imageUpload;
 };
 
-const savePropertyImagesToCloudinary = async (images: File[]) => {
+export const savePropertyImagesToCloudinary = async (images: File[]) => {
   const imageUploadArray = await Promise.all<string>(
     images.map(async (image: File) => {
       const base64 = await getImageBase64(image);
@@ -47,7 +47,7 @@ const savePropertyImagesToCloudinary = async (images: File[]) => {
   return imageUploadArray;
 };
 
-const createPropertySchema = z.object({
+export const createPropertySchema = z.object({
   name: z.string().min(3, "name must be 3 chars at least"),
   description: z.string().min(10, "description must be 10 chars at least"),
   type: z.enum([
