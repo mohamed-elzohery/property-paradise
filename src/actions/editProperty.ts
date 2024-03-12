@@ -1,19 +1,16 @@
 "use server";
 
 import cloudinary from "@/config/cloudinary";
-import connectDB from "@/config/database";
 import { authOptions } from "@/lib/utils/auth";
 import Property from "@/models/Property";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { json } from "stream/consumers";
-import { ZodIssue, z } from "zod";
 import {
   CreateSchemaFormState,
   createPropertySchema,
   savePropertyImagesToCloudinary,
-} from "./createProperty";
+} from "./common";
 
 export const editProperty = async (
   newPayload: FormData,
