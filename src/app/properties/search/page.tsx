@@ -1,4 +1,3 @@
-import { fetchProperties } from "@/lib/data/properties";
 import { fetchSearchedProperties } from "@/lib/data/search";
 import PropertiesList from "@/ui/properties/PropertiesList";
 import Link from "next/link";
