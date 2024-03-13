@@ -118,7 +118,13 @@ const PropertyInfo: React.FC<PropertyInfoProps> = async ({ property }) => {
           <aside className="space-y-4 lg:col-span-2">
             <BookmarkButton userDetails={userDetails} property={property} />
             <ShareButtons property={property} />
-            <PropertyContactForm property={property} />
+            {session ? (
+              session.user.id !== property.owner.toString() && (
+                <PropertyContactForm property={property} />
+              )
+            ) : (
+              <PropertyContactForm property={property} />
+            )}
           </aside>
         </div>
       </div>

@@ -12,7 +12,10 @@ const PropertyContactForm: React.FC<PropertyContactFormProps> = ({
   property,
 }) => {
   const [formState, action] = useFormState(
-    createMessage.bind(null, property.owner),
+    createMessage.bind(null, {
+      propertyID: property._id.toString(),
+      receiverID: property.owner.toString(),
+    }),
     {
       errors: { fieldsErrors: {} },
       success: false,

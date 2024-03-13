@@ -24,7 +24,7 @@ interface CreateMessageState {
 }
 
 export const createMessage = async (
-  receiverID: string,
+  { propertyID, receiverID }: { receiverID: string; propertyID: string },
   formState: CreateMessageState,
   formData: FormData
 ): Promise<CreateMessageState> => {
@@ -60,6 +60,12 @@ export const createMessage = async (
         success: false,
         callbackNumber,
       };
+    if (receiverID === session.user.id)
+      return {
+        callbackNumber,
+        errors: { fieldsErrors: {}, _form: "cannot send message to your self" },
+        success: false,
+      };
     const message = new Message({
       sender: session.user.id,
       receiver: receiverID,
@@ -67,6 +73,7 @@ export const createMessage = async (
       body: data.body,
       email: data.email,
       phone: data.phone,
+      property: propertyID,
     });
     await message.save();
     return {

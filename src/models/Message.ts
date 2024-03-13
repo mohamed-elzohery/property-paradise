@@ -12,6 +12,11 @@ const MessageSchema = new Schema(
       ref: "User",
       required: [true, "receiver is required"],
     },
+    property: {
+      type: Schema.Types.ObjectId,
+      ref: "Property",
+      required: [true, "property is required"],
+    },
     name: {
       type: String,
       required: [true, "name is required"],
