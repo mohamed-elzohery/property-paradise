@@ -36,6 +36,6 @@ const MessageSchema = new Schema(
   }
 );
 
-const User = models?.User || model("Message", MessageSchema);
+const Message = models?.Message || model("Message", MessageSchema);
 
-export default User;
+export default Message;

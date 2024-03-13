@@ -1,4 +1,7 @@
 "use server";
+import { authOptions } from "@/lib/utils/auth";
+import Message from "@/models/Message";
+import { getServerSession } from "next-auth";
 import { ZodIssue, z } from "zod";
 
 const createMessageSchema = z.object({
@@ -14,15 +17,19 @@ interface CreateMessageState {
       name?: string[];
       body?: string[];
     };
-    _form?: string[];
+    _form?: string;
   };
   success: boolean;
+  callbackNumber: number;
 }
 
 export const createMessage = async (
+  receiverID: string,
   formState: CreateMessageState,
   formData: FormData
 ): Promise<CreateMessageState> => {
+  const callbackNumber = formState.callbackNumber + 1;
+  console.log(formData);
   const data = {
     name: formData.get("name"),
     body: formData.get("body"),
@@ -39,11 +46,39 @@ export const createMessage = async (
         },
       },
       success: false,
+      callbackNumber,
     };
   }
-  console.log(result.data);
-  return {
-    errors: { fieldsErrors: {} },
-    success: true,
-  };
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user)
+      return {
+        errors: {
+          fieldsErrors: {},
+          _form: "please login to send a message",
+        },
+        success: false,
+        callbackNumber,
+      };
+    const message = new Message({
+      sender: session.user.id,
+      receiver: receiverID,
+      name: data.name,
+      body: data.body,
+      email: data.email,
+      phone: data.phone,
+    });
+    await message.save();
+    return {
+      errors: { fieldsErrors: {}, _form: "Message is send successfully" },
+      success: true,
+      callbackNumber,
+    };
+  } catch (error) {
+    return {
+      errors: { fieldsErrors: {}, _form: "Something went wrong" },
+      success: false,
+      callbackNumber,
+    };
+  }
 };
