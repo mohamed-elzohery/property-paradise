@@ -1,14 +1,34 @@
+"use client";
+import { markAsRead } from "@/actions/markAsRead";
 import Property from "@/models/Property";
 import { Message } from "@/types/user/Message";
-import React from "react";
+import React, { useEffect } from "react";
+import { useFormState } from "react-dom";
+import { toast } from "react-toastify";
 
 interface MessageCardProps {
   message: Message;
 }
 
 const MessageCard: React.FC<MessageCardProps> = ({ message }) => {
+  const [state, action] = useFormState(markAsRead.bind(null, message._id), {
+    callNumber: 0,
+    isRead: message.read,
+    message: "",
+    success: false,
+  });
+  useEffect(() => {
+    if (state.callNumber === 0) return;
+    if (state.success) toast.success(state.message);
+    if (!state.success) toast.error(state.message);
+  }, [state.message]);
   return (
     <div className="relative bg-white p-4 rounded-md shadow-md border border-gray-200">
+      {!message.read && (
+        <div className="absolute right-3 top-3 py-1 px-2 bg-yellow-500 text-white rounded-md">
+          New
+        </div>
+      )}
       <h2 className="text-xl mb-4">
         <span className="font-bold">Property Inquiry: </span>
         {message.property}
@@ -37,12 +57,20 @@ const MessageCard: React.FC<MessageCardProps> = ({ message }) => {
           {new Date(message.createdAt).toLocaleDateString()}
         </li>
       </ul>
-      <button className="mt-4 mr-3 bg-blue-500 text-white py-1 px-3 rounded-md">
-        Mark As Read
-      </button>
-      <button className="mt-4 bg-red-500 text-white py-1 px-3 rounded-md">
-        Delete
-      </button>
+      <div className="flex gap-2">
+        <form action={action}>
+          <button
+            className={`mt-4 mr-3 ${
+              message.read ? "bg-gray-300" : "bg-blue-500 text-white"
+            }  py-1 px-3 rounded-md`}
+          >
+            {message.read ? "Mark as new" : "Mark As Read"}
+          </button>
+        </form>
+        <button className="mt-4 bg-red-500 text-white py-1 px-3 rounded-md">
+          Delete
+        </button>
+      </div>
     </div>
   );
 };

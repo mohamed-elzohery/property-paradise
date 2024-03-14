@@ -9,7 +9,6 @@ const MessagesPage = async () => {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) return notFound();
   const messages = await fetchMessages(session.user.id);
-  console.log(messages);
   return (
     <section className="bg-blue-50">
       <div className="container m-auto py-24 max-w-6xl">
@@ -18,12 +17,13 @@ const MessagesPage = async () => {
 
           <div className="space-y-4">
             {messages.length === 0 ? (
-              <p className="mt-4">You don't have any messages</p>
+              <p className="mt-4">You don not have any messages</p>
             ) : (
               messages.map((message) => (
                 <MessageCard
-                  key={message._id}
+                  key={message._id.toString()}
                   message={{
+                    _id: message._id.toString(),
                     body: message.body,
                     createdAt: message.createdAt,
                     email: message.email,

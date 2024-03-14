@@ -1,4 +1,5 @@
 export interface Message {
+  _id: string;
   property: string;
   username: string;
   body: string;
