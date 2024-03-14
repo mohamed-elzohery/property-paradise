@@ -5,6 +5,7 @@ import Navbar from "@/ui/nav/Navbar";
 import Footer from "@/ui/footer/Footer";
 import AuthProvider from "@/Providers/SessionProvider";
 import ToastContainer from "@/Providers/ToastContainer";
+import Header from "@/ui/Header/Header";
 
 export const metadata: Metadata = {
   title: "Property Paradise | Find your dream property",
@@ -18,9 +19,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
     <html lang="en">
       <body className="min-h-screen flex flex-col">
         <AuthProvider>
-          <header>
-            <Navbar />
-          </header>
+          <Header />
           <main className="flex-1">{children}</main>
           <Footer />
           <ToastContainer />

@@ -32,6 +32,7 @@ export async function deleteListing(
     await Message.deleteMany({ property: propertyID });
     revalidatePath("/messages");
     revalidatePath("/profile");
+    revalidatePath("/properties");
     return {
       message: "property deleted successfully",
       success: true,

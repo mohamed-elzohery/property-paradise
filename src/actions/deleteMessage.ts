@@ -9,21 +9,18 @@ import { revalidatePath } from "next/cache";
 interface FormState {
   message: string | null;
   success: boolean;
-  isRead: boolean;
 }
 
-export async function markAsRead(
+export async function deleteMessage(
   messageID: string,
   formState: FormState
 ): Promise<FormState> {
-  let isRead = formState.isRead;
   try {
     const session = await getServerSession(authOptions);
     if (session === null || !session.user?.id)
       return {
         message: "unregisitered user",
         success: false,
-        isRead,
       };
     await connectDB();
     const message = await Message.findById(messageID);
@@ -31,25 +28,19 @@ export async function markAsRead(
       return {
         message: "unauthorized user",
         success: false,
-        isRead,
       };
-    message.read = !isRead;
-    await message.save();
+    await message.deleteOne();
 
     revalidatePath("/messages");
     // revalidatePath("/profile");
     return {
-      message: message.read
-        ? "message is marked as read"
-        : "message is marked as unread",
+      message: "message is deleted",
       success: true,
-      isRead: message.read,
     };
   } catch (error) {
     return {
-      message: "failed to mark as read",
+      message: "failed to delete the message",
       success: false,
-      isRead: isRead,
     };
   }
 }
