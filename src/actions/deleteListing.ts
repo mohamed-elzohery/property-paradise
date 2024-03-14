@@ -2,6 +2,7 @@
 
 import connectDB from "@/config/database";
 import { authOptions } from "@/lib/utils/auth";
+import Message from "@/models/Message";
 import Property from "@/models/Property";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
@@ -27,6 +28,9 @@ export async function deleteListing(
     if (property.owner.toString() !== session.user.id)
       return { message: "unauthorized user", success: false, callNumber };
     await property.deleteOne();
+    // deleting all assiociated messages with this property
+    await Message.deleteMany({ property: propertyID });
+    revalidatePath("/messages");
     revalidatePath("/profile");
     return {
       message: "property deleted successfully",

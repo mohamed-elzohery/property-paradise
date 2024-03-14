@@ -17,20 +17,24 @@ const MessagesPage = async () => {
           <h1 className="text-3xl font-bold mb-4">Your Messages</h1>
 
           <div className="space-y-4">
-            {messages.map((message) => (
-              <MessageCard
-                key={message._id}
-                message={{
-                  body: message.body,
-                  createdAt: message.createdAt,
-                  email: message.email,
-                  phone: message.phone,
-                  property: message.property.name,
-                  read: message.read,
-                  username: message.sender.username,
-                }}
-              />
-            ))}
+            {messages.length === 0 ? (
+              <p className="mt-4">You don't have any messages</p>
+            ) : (
+              messages.map((message) => (
+                <MessageCard
+                  key={message._id}
+                  message={{
+                    body: message.body,
+                    createdAt: message.createdAt,
+                    email: message.email,
+                    phone: message.phone,
+                    property: message.property.name,
+                    read: message.read,
+                    username: message.sender.username,
+                  }}
+                />
+              ))
+            )}
           </div>
         </div>
       </div>
