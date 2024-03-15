@@ -1,6 +1,7 @@
 import PropertiesList from "@/ui/properties/PropertiesList";
 import React from "react";
 import { fetchProperties } from "@/lib/data/properties";
+import Pagination from "@/ui/pagination/Pagination";
 
 const PropertiesPage = async ({
   searchParams,
@@ -24,6 +25,11 @@ const PropertiesPage = async ({
           All Properties
         </h2>
         <PropertiesList properties={response.properties} />
+        <Pagination
+          page={currentPage}
+          pageSize={currentPageSize}
+          totalDocs={response.total}
+        />
       </div>
     </section>
   );
