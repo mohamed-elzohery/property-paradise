@@ -2,13 +2,10 @@ import React from "react";
 import PropertiesList from "./PropertiesList";
 import DUMMY_PROPS from "@/assets/properties.json";
 import Link from "next/link";
-import { fetchProperties } from "@/lib/data/properties";
+import { fetchHomeProperties } from "@/lib/data/properties";
 
 const HomeProperties = async () => {
-  const properties = await fetchProperties();
-  const randomProperties = properties
-    .sort(() => Math.random() - Math.random())
-    .slice(0, 3);
+  const properties = await fetchHomeProperties();
 
   return (
     <>
@@ -17,7 +14,7 @@ const HomeProperties = async () => {
           <h2 className="text-3xl font-bold text-blue-500 mb-6 text-center">
             Recent Properties
           </h2>
-          <PropertiesList properties={randomProperties} />
+          <PropertiesList properties={properties} />
         </div>
       </section>
       <section className="m-auto max-w-lg my-10 px-6">

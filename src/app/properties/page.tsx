@@ -2,8 +2,20 @@ import PropertiesList from "@/ui/properties/PropertiesList";
 import React from "react";
 import { fetchProperties } from "@/lib/data/properties";
 
-const PropertiesPage = async () => {
-  const properties = await fetchProperties();
+const PropertiesPage = async ({
+  searchParams,
+}: {
+  searchParams?: {
+    pageSize?: string;
+    page?: string;
+  };
+}) => {
+  const currentPage = Number(searchParams?.page) || 1;
+  const currentPageSize = Number(searchParams?.pageSize) || 10;
+  const response = await fetchProperties({
+    page: currentPage,
+    pageSize: currentPageSize,
+  });
 
   return (
     <section className="px-4 py-6">
@@ -11,7 +23,7 @@ const PropertiesPage = async () => {
         <h2 className="text-3xl font-bold text-blue-500 mb-6 text-center">
           All Properties
         </h2>
-        <PropertiesList properties={properties} />
+        <PropertiesList properties={response.properties} />
       </div>
     </section>
   );
