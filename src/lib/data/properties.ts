@@ -6,15 +6,17 @@ import { headers } from "next/headers";
 export const fetchProperties = async ({
   page,
   pageSize,
+  query,
 }: {
   page: number;
   pageSize: number;
+  query?: { isFeatured: boolean };
 }) => {
   try {
     await connectDB();
     const skip = (page - 1) * pageSize;
     const total = await PropertyModel.countDocuments({});
-    const properties = (await PropertyModel.find({})
+    const properties = (await PropertyModel.find(query || {})
       .skip(skip)
       .limit(pageSize)) as Property[];
     return { total, properties };

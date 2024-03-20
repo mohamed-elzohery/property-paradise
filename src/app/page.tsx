@@ -1,6 +1,7 @@
 import InfoBoxes from "@/ui/Info/info-boxes/InfoBoxes";
 import Hero from "@/ui/hero/Hero";
 import HomeProperties from "@/ui/properties/HomeProperties";
+import FeathuredProperties from "@/ui/properties/featured/FeathuredProperties";
 import React from "react";
 
 const HomePage = () => {
@@ -8,6 +9,7 @@ const HomePage = () => {
     <>
       <Hero />
       <InfoBoxes />
+      <FeathuredProperties />
       <HomeProperties />
     </>
   );

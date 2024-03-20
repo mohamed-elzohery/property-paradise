@@ -1,55 +1,38 @@
 import Image from "next/image";
 import React from "react";
-import {
-  FaBed,
-  FaBath,
-  FaMapMarked,
-  FaRulerCombined,
-  FaMoneyBill,
-} from "react-icons/fa";
-import { Property, Rates } from "@/types/properties/Property";
-import PropertyDefaultImage from "@/assets/images/logo.png";
+import { getRentalRate, PropertyCard } from "../PropertyCard";
+import { FaBath, FaBed, FaMoneyBill, FaRulerCombined } from "react-icons/fa";
 import Link from "next/link";
+import LogoImage from "@/assets/images/logo.png";
 
-export interface PropertyCard {
-  property: Property;
-}
-
-export const getRentalRate = (rates: Rates) => {
-  if (rates.monthly) return `${rates.monthly.toLocaleString()}/mo`;
-  if (rates.weekly) return `${rates.weekly.toLocaleString()}/wk`;
-  if (rates.nightly) return `${rates.nightly.toLocaleString()}/wk`;
-};
-const PropertyCard: React.FC<PropertyCard> = ({
+const FeaturedPropertyCard: React.FC<PropertyCard> = ({
   property: {
     _id,
     baths,
     beds,
+    description,
     images,
     location: { city, state },
     name,
     rates,
     square_feet,
     type,
-    description,
   },
 }) => {
   return (
-    <div className="bg-white rounded-xl shadow-md relative">
-      <div className="h-60">
+    <div className="bg-white rounded-xl shadow-md flex flex-col md:flex-row">
+      <div className="relative md:basis-1/2 md:h-auto h-60 basis-auto">
         <Image
-          src={images[0] || PropertyDefaultImage}
-          alt={`${name}: ${description}`}
-          className="object-cover rounded-t-xl !static"
+          src={images[0] || LogoImage}
           fill
+          alt={description}
+          className="object-cover rounded-t-xl md:rounded-tr-none md:rounded-l-xl w-full md:w-2/5"
         />
       </div>
-      <div className="p-4">
-        <div className="text-left md:text-center lg:text-left mb-6">
-          <div className="text-gray-600">{type}</div>
-          <h3 className="text-xl font-bold">{name}</h3>
-        </div>
-        <h3 className="absolute top-[10px] right-[10px] bg-white px-4 py-2 rounded-lg text-blue-500 font-bold text-right md:text-center lg:text-right">
+      <div className="p-6">
+        <h3 className="text-xl font-bold">{name}</h3>
+        <div className="text-gray-600 mb-4">{type}</div>
+        <h3 className="absolute top-[10px] left-[10px] bg-white px-4 py-2 rounded-lg text-blue-500 font-bold text-right md:text-center lg:text-right">
           {`$${getRentalRate(rates)}`}
         </h3>
         <div className="flex justify-center gap-4 text-gray-500 mb-4">
@@ -83,14 +66,13 @@ const PropertyCard: React.FC<PropertyCard> = ({
             </p>
           )}
         </div>
-        <div className="border border-gray-100 mb-5" />
-        <div className="flex flex-col lg:flex-row justify-between mb-4">
+        <div className="border border-gray-200 mb-5" />
+        <div className="flex flex-col lg:flex-row justify-between">
           <div className="flex align-middle gap-2 mb-4 lg:mb-0">
-            <FaMapMarked className="inline mr-2 text-orange-700 mt-1" />
-
+            <i className="fa-solid fa-location-dot text-lg text-orange-700" />
             <span className="text-orange-700">
               {" "}
-              {city} {state}{" "}
+              {city} {state}
             </span>
           </div>
           <Link
@@ -105,4 +87,4 @@ const PropertyCard: React.FC<PropertyCard> = ({
   );
 };
 
-export default PropertyCard;
+export default FeaturedPropertyCard;
