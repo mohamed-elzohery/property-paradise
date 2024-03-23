@@ -20,7 +20,7 @@ const FeaturedPropertyCard: React.FC<PropertyCard> = ({
   },
 }) => {
   return (
-    <div className="bg-white rounded-xl shadow-md flex flex-col md:flex-row">
+    <div className="relative bg-white rounded-xl shadow-md flex flex-col md:flex-row">
       <div className="relative md:basis-1/2 md:h-auto h-60 basis-auto">
         <Image
           src={images[0] || LogoImage}
@@ -29,7 +29,7 @@ const FeaturedPropertyCard: React.FC<PropertyCard> = ({
           className="object-cover rounded-t-xl md:rounded-tr-none md:rounded-l-xl w-full md:w-2/5"
         />
       </div>
-      <div className="p-6">
+      <div className="p-6 ">
         <h3 className="text-xl font-bold">{name}</h3>
         <div className="text-gray-600 mb-4">{type}</div>
         <h3 className="absolute top-[10px] left-[10px] bg-white px-4 py-2 rounded-lg text-blue-500 font-bold text-right md:text-center lg:text-right">
