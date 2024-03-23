@@ -5,9 +5,16 @@
 @layer utilities {
   .fluid-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
   .fluid-grid > *:last-child:nth-child(odd) {
     grid-column: 1 / -1;
+  }
+
+  @media only screen and (max-width: 600px) {
+    .fluid-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
   }
 }

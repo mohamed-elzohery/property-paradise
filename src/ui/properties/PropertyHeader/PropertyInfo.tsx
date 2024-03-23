@@ -111,9 +111,9 @@ const PropertyInfo: React.FC<PropertyInfoProps> = async ({ property }) => {
                 ))}
               </ul>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-md mt-6">
+            {/* <div className="bg-white p-6 rounded-lg shadow-md mt-6">
               <div id="map" />
-            </div>
+            </div> */}
           </main>
           <aside className="space-y-4 lg:col-span-2">
             <BookmarkButton userDetails={userDetails} property={property} />

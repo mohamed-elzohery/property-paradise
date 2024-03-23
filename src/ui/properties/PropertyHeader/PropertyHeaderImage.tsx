@@ -13,11 +13,11 @@ const PropertyHeaderImage: React.FC<PropertyHeaderImageProps> = ({
   return (
     <section>
       <div className="container-xl m-auto">
-        <div className="grid grid-cols-1 h-[400px] w-full relative">
+        <div className="grid grid-cols-1 h-[60vh] w-full relative">
           <Image
             src={imageSrc}
             alt={description || ""}
-            className="object-cover "
+            className="object-cover"
             fill
             priority={true}
           />
