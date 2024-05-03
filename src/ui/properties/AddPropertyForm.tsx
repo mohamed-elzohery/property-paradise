@@ -4,6 +4,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { useFormState } from "react-dom";
 import { FaTrash } from "react-icons/fa";
+import { SubmitButton } from "../button/SubmitButton";
 
 interface ImagePreview {
   src: string;
@@ -473,12 +474,7 @@ const AddPropertyForm = () => {
           <p className="my-4 text-red-600">*{state.errors._form[0]} </p>
         )}
 
-        <button
-          className="my-6 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
-          type="submit"
-        >
-          Add Property
-        </button>
+        <SubmitButton>Add Property</SubmitButton>
       </div>
     </form>
   );
